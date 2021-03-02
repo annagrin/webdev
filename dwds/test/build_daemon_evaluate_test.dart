@@ -41,7 +41,7 @@ class TestSetup {
 }
 
 void main() async {
-  for (var soundNullSafety in [true, false]) {
+  for (var soundNullSafety in [false, true]) {
     var setup = soundNullSafety ? TestSetup.sound() : TestSetup.unsound();
     var context = setup.context;
     group('${soundNullSafety ? "" : "no "}sound null safety', () {
@@ -386,6 +386,33 @@ void main() async {
                   throwsRPCError);
             });
           });
+        });
+
+        group('evaluate', () {
+          VM vm;
+          Isolate isolate;
+
+          setUp(() async {
+            vm = await setup.service.getVM();
+            isolate = await setup.service.getIsolate(vm.isolates.first.id);
+
+            await setup.service.streamListen('Debug');
+          });
+
+          tearDown(() async {});
+
+          test('closure call', () async {
+            var library = isolate.libraries.first;
+            var result = await setup.service
+                .evaluate(isolate.id, library.id, '(() => 42)()');
+
+            expect(
+                result,
+                const TypeMatcher<InstanceRef>().having(
+                    (instance) => instance.valueAsString,
+                    'valueAsString',
+                    '42'));
+          }, tags: ['dev-sdk']);
         });
       }, timeout: const Timeout.factor(2));
 

@@ -125,6 +125,11 @@ class FakeModules implements Modules {
   Future<Map<String, String>> modules() {
     throw UnimplementedError();
   }
+
+  @override
+  Future<String> moduleForlibrary(String libraryUri) {
+    throw UnimplementedError();
+  }
 }
 
 class FakeWebkitDebugger implements WebkitDebugger {
@@ -263,6 +268,9 @@ class FakeStrategy implements LoadStrategy {
 
   @override
   String get id => 'dummy-id';
+
+  @override
+  String get moduleFormat => 'dummy-format';
 
   @override
   String get loadLibrariesSnippet => '';

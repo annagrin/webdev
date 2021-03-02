@@ -76,6 +76,9 @@ class LegacyStrategy extends LoadStrategy {
   String get id => 'legacy';
 
   @override
+  String get moduleFormat => 'ddc';
+
+  @override
   String get loadLibrariesSnippet =>
       'for(let module of dart_library.libraries()) {\n'
       'dart_library.import(module)[module];\n'

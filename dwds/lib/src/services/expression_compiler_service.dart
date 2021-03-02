@@ -67,6 +67,7 @@ class _Compiler {
     String workerPath,
     String sdkSummaryPath,
     String librariesPath,
+    String moduleFormat,
     bool verbose,
     bool soundNullSafety,
   ) async {
@@ -96,6 +97,8 @@ class _Compiler {
       address,
       '--asset-server-port',
       '$port',
+      '--module-format',
+      moduleFormat,
       if (verbose) '--verbose',
       soundNullSafety ? '--sound-null-safety' : '--no-sound-null-safety',
     ];
@@ -268,7 +271,7 @@ class ExpressionCompilerService implements ExpressionCompiler {
           line, column, jsModules, jsFrameValues, moduleName, expression);
 
   @override
-  Future<void> initialize({bool soundNullSafety}) async {
+  Future<void> initialize({String moduleFormat, bool soundNullSafety}) async {
     if (_compiler.isCompleted) return;
     soundNullSafety ??= false;
 
@@ -286,7 +289,7 @@ class ExpressionCompilerService implements ExpressionCompiler {
         _workerPath ?? p.join(binDir, 'snapshots', 'dartdevc.dart.snapshot');
 
     var compiler = await _Compiler.start(_address, await _port, workerPath,
-        sdkSummaryPath, librariesPath, _verbose, soundNullSafety);
+        sdkSummaryPath, librariesPath, moduleFormat, _verbose, soundNullSafety);
 
     _compiler.complete(compiler);
   }
