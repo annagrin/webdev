@@ -779,5 +779,5 @@ class TestExpressionCompiler implements ExpressionCompiler {
       true;
 
   @override
-  Future<void> initialize({bool soundNullSafety}) async {}
+  Future<void> initialize({String moduleFormat, bool soundNullSafety}) async {}
 }
