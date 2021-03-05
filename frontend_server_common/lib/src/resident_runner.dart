@@ -18,8 +18,6 @@ import 'utilities.dart';
 
 final Uri platformDill =
     Uri.file(p.join(dartSdkPath, 'lib', '_internal', 'ddc_sdk.dill'));
-final Uri soundPlatformDill =
-    Uri.file(p.join(dartSdkPath, 'lib', '_internal', 'ddc_outline_sound.dill'));
 
 class ResidentWebRunner {
   ResidentWebRunner(
@@ -30,14 +28,12 @@ class ResidentWebRunner {
       this.fileSystemRoots,
       this.fileSystemScheme,
       this.outputPath,
-      this.soundNullSafety,
       bool verbose) {
     generator = ResidentCompiler(dartSdkPath,
         packagesPath: packagesPath,
-        platformDill: soundNullSafety ? '$soundPlatformDill' : '$platformDill',
+        platformDill: '$platformDill',
         fileSystemRoots: fileSystemRoots,
         fileSystemScheme: fileSystemScheme,
-        soundNullSafety: soundNullSafety,
         verbose: verbose);
     expressionCompiler = TestExpressionCompiler(generator);
   }
@@ -49,7 +45,6 @@ class ResidentWebRunner {
   final String outputPath;
   final List<String> fileSystemRoots;
   final String fileSystemScheme;
-  final bool soundNullSafety;
 
   ResidentCompiler generator;
   ExpressionCompiler expressionCompiler;
@@ -71,7 +66,6 @@ class ResidentWebRunner {
       packagesPath: packagesPath,
       root: root,
       urlTunneller: urlTunneller,
-      soundNullSafety: soundNullSafety,
     );
     uri = await devFS.create();
 

@@ -29,7 +29,6 @@ class WebDevFS {
     this.packagesPath,
     this.root,
     this.urlTunneller,
-    this.soundNullSafety,
   });
 
   final FileSystem fileSystem;
@@ -42,7 +41,6 @@ class WebDevFS {
   final UrlEncoder urlTunneller;
   Directory _savedCurrentDirectory;
   List<Uri> sources;
-  bool soundNullSafety;
 
   Future<Uri> create() async {
     _savedCurrentDirectory = fileSystem.currentDirectory;
@@ -83,13 +81,10 @@ class WebDevFS {
       ),
     );
 
-    var sdk = soundNullSafety ? dartSdkSound : dartSdk;
-    var sdkSourceMap =
-        soundNullSafety ? dartSdkSourcemapSound : dartSdkSourcemap;
-
     assetServer.writeFile('/main_module.digests', '{}');
-    assetServer.writeFile('/dart_sdk.js', sdk.readAsStringSync());
-    assetServer.writeFile('/dart_sdk.js.map', sdkSourceMap.readAsStringSync());
+    assetServer.writeFile('/dart_sdk.js', dartSdk.readAsStringSync());
+    assetServer.writeFile(
+        '/dart_sdk.js.map', dartSdkSourcemap.readAsStringSync());
     // TODO(jonahwilliams): refactor the asset code in this and the regular devfs to
     // be shared.
     if (bundle != null) {
@@ -154,24 +149,10 @@ class WebDevFS {
         'dart_sdk.js',
       ));
 
-  File get dartSdkSound => fileSystem.file(fileSystem.path.join(
-        dartWebSdkPath,
-        'kernel',
-        'amd-sound',
-        'dart_sdk.js',
-      ));
-
   File get dartSdkSourcemap => fileSystem.file(fileSystem.path.join(
         dartWebSdkPath,
         'kernel',
         'amd',
-        'dart_sdk.js.map',
-      ));
-
-  File get dartSdkSourcemapSound => fileSystem.file(fileSystem.path.join(
-        dartWebSdkPath,
-        'kernel',
-        'amd-sound',
         'dart_sdk.js.map',
       ));
 
